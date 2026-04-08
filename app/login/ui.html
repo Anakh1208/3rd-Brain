@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>3rd Brain · Login / Sign up</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0a;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* animated background grain */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 10%, rgba(127, 119, 221, 0.08) 0%, rgba(10, 10, 10, 0) 70%);
+      pointer-events: none;
+    }
+
+    /* main card */
+    .auth-container {
+      max-width: 460px;
+      width: 100%;
+      background: #0f0f12;
+      border-radius: 40px;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(127, 119, 221, 0.2);
+      overflow: hidden;
+      backdrop-filter: blur(2px);
+      transition: transform 0.2s ease;
+    }
+
+    /* header area */
+    .auth-header {
+      padding: 32px 32px 16px 32px;
+      text-align: center;
+      border-bottom: 1px solid #1e1e2a;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      background: linear-gradient(135deg, #ffffff 0%, #b9b3ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: #7a7a8c;
+      margin-top: 6px;
+    }
+
+    /* tab switcher (login / signup) */
+    .tab-switch {
+      display: flex;
+      padding: 20px 24px 0 24px;
+      gap: 12px;
+      background: #0a0a0c;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 12px 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: #6a6a80;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-radius: 40px;
+      font-family: inherit;
+    }
+
+    .tab-btn.active {
+      color: #7F77DD;
+      background: #14121f;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* forms */
+    .form-panel {
+      padding: 28px 28px 36px 28px;
+      background: #0a0a0c;
+      transition: all 0.25s ease;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #b0b0c0;
+      letter-spacing: 0.3px;
+    }
+
+    .input-field {
+      width: 100%;
+      background: #111115;
+      border: 1.5px solid #23232e;
+      border-radius: 20px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #f0f0f0;
+      font-family: inherit;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: #7F77DD;
+      box-shadow: 0 0 0 3px rgba(127, 119, 221, 0.2);
+      background: #0d0d12;
+    }
+
+    .input-field::placeholder {
+      color: #3a3a4a;
+      font-weight: 400;
+    }
+
+    /* password hint */
+    .helper-text {
+      font-size: 10px;
+      color: #5a5a70;
+      margin-top: 6px;
+      margin-left: 8px;
+    }
+
+    /* action button */
+    .action-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #7F77DD 0%, #6B63C5 100%);
+      border: none;
+      border-radius: 40px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin-top: 8px;
+      font-family: inherit;
+      box-shadow: 0 4px 12px rgba(127, 119, 221, 0.25);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(127, 119, 221, 0.35);
+      background: linear-gradient(135deg, #8b84e6, #7a72d4);
+    }
+
+    .action-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0 20px;
+      color: #3a3a4a;
+      font-size: 11px;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: #23232e;
+    }
+
+    /* demo hint */
+    .demo-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #5a5a70;
+      background: #0f0f14;
+      padding: 14px;
+      border-radius: 24px;
+      margin-top: 16px;
+      border: 1px dashed #2a2a36;
+    }
+
+    .demo-hint span {
+      color: #7F77DD;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    .demo-hint span:hover {
+      text-decoration: underline;
+      color: #a59eff;
+    }
+
+    /* toast */
+    .toast-message {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1D9E75;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 60px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 1000;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      animation: fadeSlide 0.25s ease;
+      pointer-events: none;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    /* micro-interactions */
+    button {
+      cursor: pointer;
+    }
+
+    /* brand accent */
+    .brand-icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="auth-container" id="authContainer">
+  <div class="auth-header">
+    <div class="brand-icon">🧠</div>
+    <div class="logo">3rd Brain</div>
+    <div class="tagline">clear the noise · focus your mind</div>
+  </div>
+
+  <div class="tab-switch">
+    <button class="tab-btn active" id="loginTabBtn">🔐 Log in</button>
+    <button class="tab-btn" id="signupTabBtn">✨ Sign up</button>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <div id="loginPanel" class="form-panel">
+    <div class="input-group">
+      <label class="input-label">Email address</label>
+      <input type="email" id="loginEmail" class="input-field" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Password</label>
+      <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button id="loginBtn" class="action-btn">Continue →</button>
+    
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span>or explore demo</span>
+      <div class="divider-line"></div>
+    </div>
+    <div class="demo-hint">
+      ⚡ Quick demo access · <span id="demoLoginBtn">use demo account</span>
+    </div>
+  </div>
+
+  <!-- SIGNUP FORM (initially hidden) -->
+  <div id="signupPanel" class="form-panel" style="display: none;">
+    <div class="input-group">
+      <label class="input-label">Full name</label>
+      <input type="text" id="signupName" class="input-field" placeholder="Alex Rivera" autocomplete="name">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Email address</label>
+      <input type="email" id="signupEmail" class="input-field" placeholder="hello@3rdbrain.com" autocomplete="email">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Create password</label>
+      <input type="password" id="signupPassword" class="input-field" placeholder="at least 6 characters">
+      <div class="helper-text">🔒 Use 6+ characters for security</div>
+    </div>
+    <button id="signupBtn" class="action-btn">✨ Create free account →</button>
+    
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span>try instantly</span>
+      <div class="divider-line"></div>
+    </div>
+    <div class="demo-hint">
+      🧪 <span id="demoSignupHint">use demo signup (no password needed)</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ----- UI State & Helpers -----
+  const loginPanel = document.getElementById('loginPanel');
+  const signupPanel = document.getElementById('signupPanel');
+  const loginTab = document.getElementById('loginTabBtn');
+  const signupTab = document.getElementById('signupTabBtn');
+  
+  // Input fields
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPassword = document.getElementById('loginPassword');
+  const signupName = document.getElementById('signupName');
+  const signupEmail = document.getElementById('signupEmail');
+  const signupPassword = document.getElementById('signupPassword');
+  
+  // Buttons
+  const loginBtn = document.getElementById('loginBtn');
+  const signupBtn = document.getElementById('signupBtn');
+  const demoLoginBtn = document.getElementById('demoLoginBtn');
+  const demoSignupHint = document.getElementById('demoSignupHint');
+  
+  // Toast notification system
+  function showToast(message, isError = false) {
+    // remove existing toast
+    const existingToast = document.querySelector('.toast-message');
+    if (existingToast) existingToast.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.textContent = message;
+    if (isError) {
+      toast.style.background = '#D4537E';
+      toast.style.boxShadow = '0 8px 20px rgba(212, 83, 126, 0.3)';
+    } else {
+      toast.style.background = '#1D9E75';
+    }
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      if (toast && toast.remove) toast.remove();
+    }, 2800);
+  }
+  
+  // redirect to localhost:3000 after successful auth
+  function redirectToApp() {
+    showToast('✅ Authentication successful! Redirecting to 3rd Brain...');
+    setTimeout(() => {
+      window.location.href = 'http://localhost:3000/';
+    }, 800);
+  }
+  
+  // simple validation
+  function isValidEmail(email) {
+    return /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/.test(email);
+  }
+  
+  // ----- LOGIN logic -----
+  function handleLogin() {
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value.trim();
+    
+    if (!email) {
+      showToast('Please enter your email address', true);
+      return;
+    }
+    if (!isValidEmail(email)) {
+      showToast('Please enter a valid email (e.g., name@example.com)', true);
+      return;
+    }
+    if (!password) {
+      showToast('Password cannot be empty', true);
+      return;
+    }
+    if (password.length < 3) {
+      showToast('Password should be at least 3 characters', true);
+      return;
+    }
+    
+    // For demo: we simulate login success (any non-empty email/password works)
+    // In a real app you'd call an API. Here we just store a flag in sessionStorage.
+    sessionStorage.setItem('3rdbrain_auth', JSON.stringify({ email: email, method: 'login', timestamp: Date.now() }));
+    showToast(`Welcome back, ${email.split('@')[0]}!`);
+    redirectToApp();
+  }
+  
+  // ----- SIGNUP logic (creates new account)-----
+  function handleSignup() {
+    const name = signupName.value.trim();
+    const email = signupEmail.value.trim();
+    const password = signupPassword.value.trim();
+    
+    if (!name) {
+      showToast('Please enter your full name', true);
+      return;
+    }
+    if (!email) {
+      showToast('Email address is required', true);
+      return;
+    }
+    if (!isValidEmail(email)) {
+      showToast('Please provide a valid email address', true);
+      return;
+    }
+    if (!password) {
+      showToast('Choose a password', true);
+      return;
+    }
+    if (password.length < 6) {
+      showToast('Password must be at least 6 characters', true);
+      return;
+    }
+    
+    // store mock user info
+    const newUser = {
+      name: name,
+      email: email,
+      signedUpAt: new Date().toISOString(),
+    };
+    sessionStorage.setItem('3rdbrain_auth', JSON.stringify({ ...newUser, method: 'signup' }));
+    showToast(`✨ Account created! Welcome ${name.split(' ')[0]} ✨`);
+    redirectToApp();
+  }
+  
+  // ----- DEMO LOGIN (instant demo user) -----
+  function demoLogin() {
+    const demoEmail = 'demo@3rdbrain.com';
+    sessionStorage.setItem('3rdbrain_auth', JSON.stringify({ 
+      email: demoEmail, 
+      name: 'Demo Explorer',
+      method: 'demo',
+      timestamp: Date.now()
+    }));
+    showToast('🧠 Demo mode activated · redirecting to dashboard');
+    redirectToApp();
+  }
+  
+  // ----- DEMO SIGNUP from signup panel: prefill + quick signup -----
+  function quickDemoSignup() {
+    const demoName = 'Mindful User';
+    const demoEmailGen = `guest_${Math.floor(Math.random() * 10000)}@demo.3rdbrain.com`;
+    const demoPassword = 'demo123';
+    
+    // auto-fill fields for better UX
+    signupName.value = demoName;
+    signupEmail.value = demoEmailGen;
+    signupPassword.value = demoPassword;
+    
+    // then trigger signup automatically
+    const name = signupName.value.trim();
+    const email = signupEmail.value.trim();
+    const password = signupPassword.value.trim();
+    
+    if (name && email && password && password.length >= 6) {
+      sessionStorage.setItem('3rdbrain_auth', JSON.stringify({ 
+        name: name, 
+        email: email, 
+        method: 'demo_signup',
+        timestamp: Date.now()
+      }));
+      showToast('🚀 Demo account ready! Redirecting...');
+      redirectToApp();
+    } else {
+      // fallback: if somehow fails, just use direct demo login
+      demoLogin();
+    }
+  }
+  
+  // ----- TAB SWITCHING (login / signup) -----
+  function setActiveTab(tab) {
+    if (tab === 'login') {
+      loginPanel.style.display = 'block';
+      signupPanel.style.display = 'none';
+      loginTab.classList.add('active');
+      signupTab.classList.remove('active');
+      // optional: clear small errors
+    } else {
+      loginPanel.style.display = 'none';
+      signupPanel.style.display = 'block';
+      signupTab.classList.add('active');
+      loginTab.classList.remove('active');
+    }
+  }
+  
+  loginTab.addEventListener('click', () => setActiveTab('login'));
+  signupTab.addEventListener('click', () => setActiveTab('signup'));
+  
+  // attach event listeners
+  loginBtn.addEventListener('click', handleLogin);
+  signupBtn.addEventListener('click', handleSignup);
+  demoLoginBtn.addEventListener('click', demoLogin);
+  if (demoSignupHint) {
+    demoSignupHint.addEventListener('click', quickDemoSignup);
+  }
+  
+  // allow "Enter" key submission on forms
+  const handleEnter = (e, type) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (type === 'login') handleLogin();
+      else if (type === 'signup') handleSignup();
+    }
+  };
+  
+  loginPassword.addEventListener('keypress', (e) => handleEnter(e, 'login'));
+  loginEmail.addEventListener('keypress', (e) => handleEnter(e, 'login'));
+  signupPassword.addEventListener('keypress', (e) => handleEnter(e, 'signup'));
+  signupEmail.addEventListener('keypress', (e) => handleEnter(e, 'signup'));
+  signupName.addEventListener('keypress', (e) => handleEnter(e, 'signup'));
+  
+  // extra: if user already has session but not on localhost? we don't redirect automatically, but we show subtle hint
+  // optional: prefill from session for convenience (not needed)
+  
+  // style: add glow effect on focus
+  const allInputs = document.querySelectorAll('.input-field');
+  allInputs.forEach(input => {
+    input.addEventListener('focus', () => {
+      input.parentElement.style.transform = 'scale(1.002)';
+    });
+    input.addEventListener('blur', () => {
+      input.parentElement.style.transform = 'scale(1)';
+    });
+  });
+  
+  // additional small effect: ripple on card
+  const container = document.querySelector('.auth-container');
+  container.addEventListener('mousemove', (e) => {
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    container.style.setProperty('--x', `${x}px`);
+    container.style.setProperty('--y', `${y}px`);
+  });
+  
+  // (optional) display if there's a stored session message (just for polish)
+  console.log('Login UI ready — redirects to http://localhost:3000 after authentication');
+</script>
+</body>
+</html>

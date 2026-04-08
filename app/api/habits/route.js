@@ -22,6 +22,13 @@ export async function POST(req) {
   return Response.json(data)
 }
 
+export async function DELETE(req) {
+  const { id } = await req.json()
+  const { error } = await supabase.from('habits').delete().eq('id', id)
+  if (error) return Response.json({ error: error.message }, { status: 500 })
+  return Response.json({ deleted: true })
+}
+
 export async function PATCH(req) {
   const { habit_id, completed_date } = await req.json()
 
